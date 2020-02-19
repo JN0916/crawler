@@ -54,6 +54,11 @@
             <artifactId>annotations</artifactId>
             <version>3.0.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>3.5.4</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -121,14 +126,13 @@
                     <user>root</user>
                     <password>root</password>
                 </configuration>
-
-<!--                <dependencies>-->
-<!--                    <dependency>-->
-<!--                        <groupId>com.h2database</groupId>-->
-<!--                        <artifactId>h2</artifactId>-->
-<!--                        <version>1.4.199</version>-->
-<!--                    </dependency>-->
-<!--                </dependencies>-->
+                <dependencies>
+                    <dependency>
+                        <groupId>com.h2database</groupId>
+                        <artifactId>h2</artifactId>
+                        <version>1.4.199</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
