@@ -17,46 +17,49 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-public class Crawler {
-    private CrawlerDao dao = new MyBatisCrawlerDao() ;
+public class Crawler extends Thread {
+    private CrawlerDao dao;
 
-    public void run() throws SQLException, IOException {
-        String link;
+    public Crawler(CrawlerDao dao) {
+        this.dao = dao;
+    }
 
-        // 从数据库中加载下一个链接，如果能加载到，则进行循环
-        while ((link = dao.getNextLinkThenDelete()) != null) {
+    @Override
+    public void run() {
+        try {
+            String link;
 
-            // 询问数据库，当前链接是不是已经处理过了
-            if (dao.isLinkProcessed(link)) {
-                continue;
+            // 从数据库中加载下一个链接，如果能加载到，则进行循环
+            while ((link = dao.getNextLinkThenDelete()) != null) {
+
+                // 询问数据库，当前链接是不是已经处理过了
+                if (dao.isLinkProcessed(link)) {
+                    continue;
+                }
+
+                if (isInterestingLink(link)) {
+                    System.out.println(link);
+                    Document doc = httpGetAndParseHtml(link);
+
+                    parseUrlFromPageAndStoreIntoDatabase(doc);
+
+                    storeIntoDatabaseIfItIsNewsPags(doc, link);
+
+                    dao.insertProcessedLink(link);
+                }
             }
-
-            if (isInterestingLink(link)) {
-                System.out.println(link);
-                Document doc = httpGetAndParseHtml(link);
-
-                parseUrlFromPageAndStoreIntoDatabase(doc);
-
-                storeIntoDatabaseIfItIsNewsPags(doc, link);
-
-                dao.insertProcessedLink(link);
-            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
-
-    @SuppressFBWarnings("DMI_CONSTANT_DB_PASSWORD")
-    public static void main(String[] args) throws IOException, SQLException {
-        new Crawler().run();
-    }
-
 
     private void parseUrlFromPageAndStoreIntoDatabase(Document doc) throws SQLException {
         for (Element aTag : doc.select("a")) {
             String href = aTag.attr("href");
 
-            // if (href.startsWith("\\/")) {
-//                continue;
-//            }
+             if (href.contains("\\/")) {
+                continue;
+            }
             if (href.startsWith("//")) {
                 href = "https" + href;
             }
