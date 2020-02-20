@@ -58,7 +58,6 @@ public class MyBatisCrawlerDao implements CrawlerDao {
         try (SqlSession session = sqlSessionFactory.openSession(true)) {
             session.insert("com.github.MyMapper.insertLink", param);
         }
-        // insert into links_already_processed (link) values (#link)
     }
 
     @Override
@@ -66,10 +65,9 @@ public class MyBatisCrawlerDao implements CrawlerDao {
         Map<String, Object> param = new HashMap<>();
         param.put("tableName", "links_to_be_processed");
         param.put("link", link);
+
         try (SqlSession session = sqlSessionFactory.openSession(true)) {
             session.insert("com.github.MyMapper.insertLink", param);
         }
-        // insert into links_to_be_processed (link) values (#link)
-
     }
 }

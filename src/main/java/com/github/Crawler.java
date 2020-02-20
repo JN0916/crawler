@@ -1,6 +1,5 @@
 package com.github;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -54,12 +53,14 @@ public class Crawler extends Thread {
     }
 
     private void parseUrlFromPageAndStoreIntoDatabase(Document doc) throws SQLException {
+
         for (Element aTag : doc.select("a")) {
             String href = aTag.attr("href");
 
              if (href.contains("\\/")) {
-                continue;
+                 continue;
             }
+
             if (href.startsWith("//")) {
                 href = "https" + href;
             }
@@ -72,6 +73,7 @@ public class Crawler extends Thread {
 
 
     private void storeIntoDatabaseIfItIsNewsPags(Document doc, String link) throws SQLException {
+
         ArrayList<Element> articleTags = doc.select("article");
         if (!articleTags.isEmpty()) {
             for (Element articleTag : articleTags) {
@@ -88,7 +90,6 @@ public class Crawler extends Thread {
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
         System.out.println(link);
-
 
         HttpGet httpGet = new HttpGet(link);
         httpGet.addHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.106 Safari/537.36");
