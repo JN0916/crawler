@@ -37,7 +37,9 @@ public class Crawler extends Thread {
                 }
 
                 if (isInterestingLink(link)) {
+
                     System.out.println(link);
+
                     Document doc = httpGetAndParseHtml(link);
 
                     parseUrlFromPageAndStoreIntoDatabase(doc);
@@ -90,6 +92,7 @@ public class Crawler extends Thread {
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
         System.out.println(link);
+
 
         HttpGet httpGet = new HttpGet(link);
         httpGet.addHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.106 Safari/537.36");
